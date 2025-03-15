@@ -6,15 +6,19 @@ class Z_rational { // rational number
     // x / y
     int x;
     int y;
-    // 
+    // c string form (update when call .to_c_str())
+    char c_str[20];
+    // set value
     void setNumber(int x, int y);
+    Z_rational operator=(const int & n);
+    Z_rational operator=(const Z_rational & o);
     Z_rational();
     Z_rational(int n);
     Z_rational(int x, int y);
-
+    // convert to string
     std::string to_string();
     const char * to_c_str();
-
+    // compute
     Z_rational abs() const;
     Z_rational opposite() const;
     Z_rational reciprocal() const;
@@ -24,7 +28,7 @@ class Z_rational { // rational number
     Z_rational operator-(const Z_rational o) const;
     Z_rational operator*(const Z_rational o) const;
     Z_rational operator/(const Z_rational o) const;
-
+    // compare
     bool operator==(const Z_rational & o) const;
     bool operator>(const Z_rational & o)  const;
     bool operator>=(const Z_rational & o) const;
@@ -45,17 +49,18 @@ void Z_rational::setNumber(int x, int y) {
     }
 }
 
-Z_rational::Z_rational() {
-    this->setNumber(0, 1);
-}
-
-Z_rational::Z_rational(int n) {
+Z_rational Z_rational::operator=(const int & n) {
     this->setNumber(n, 1);
+    return *this;
+}
+Z_rational Z_rational::operator=(const Z_rational & o) {
+    this->setNumber(o.x, o.y); 
+    return *this;
 }
 
-Z_rational::Z_rational(int x, int y) {
-    this->setNumber(x, y);
-}
+Z_rational::Z_rational() { this->setNumber(0, 1); }
+Z_rational::Z_rational(int n) { this->setNumber(n, 1); }
+Z_rational::Z_rational(int x, int y) { this->setNumber(x, y); }
 
 std::string Z_rational::to_string() {
     std::string s = std::to_string(this->x);
@@ -67,7 +72,16 @@ std::string Z_rational::to_string() {
 }
 const char * Z_rational::to_c_str() {
     std::string s = this->to_string();
-    return s.c_str();
+    // generate c string and copy to `this->c_str`
+    const char * P = s.c_str();
+    char * Q = this->c_str;
+    while (*P) {
+        *Q = *P;
+        P ++;
+        Q ++;
+    }
+    *Q = '\0';
+    return this->c_str;
 }
 
 
